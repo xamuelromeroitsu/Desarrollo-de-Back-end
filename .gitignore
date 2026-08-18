@@ -1,0 +1,14 @@
+# Ignorar una carpeta completa
+node_modules/
+
+# Ignorar todos los archivos con una extensión específica
+*.log
+
+# Ignorar un archivo en particular
+.env
+
+# Ignorar todos los archivos .txt dentro de una carpeta específica
+doc/*.txt
+
+# Excluir un archivo de ser ignorado (usando !)
+!doc/importante.txt

@@ -1,0 +1,16 @@
+{
+  "name": "backend-course",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Actividades y proyecto transversal del curso de backend",
+  "scripts": {
+    "class-01": "node activities/class-01/src/server.js",
+    "class-02": "node activities/class-02/src/server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

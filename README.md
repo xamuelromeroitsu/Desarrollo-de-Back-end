@@ -9,6 +9,9 @@ Repositorio de aprendizaje de desarrollo backend con Node.js y Express.
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/es/docs/Web/JavaScript)
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/learn/getting-started/introduction-to-nodejs)
 [![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/es/starter/installing/)
+[![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/index.html)
+[![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)](https://git-scm.com/doc)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://docs.github.com/es)
 
 ## Propósito
 
@@ -62,12 +65,15 @@ Antes de entregar, revisa el checklist incluido en cada README. Una entrega est�
 
 ## Ejecución rápida
 
+**Terminal 1 — iniciar el servidor** (queda corriendo; no cierres esa terminal):
+
 ```powershell
 cd activities/class-01
 node src/server.js
+# Server running at http://localhost:3000
 ```
 
-En otra terminal:
+**Terminal 2 — probarlo mientras la Terminal 1 sigue abierta:**
 
 ```powershell
 curl.exe -i http://localhost:3000/health
@@ -78,7 +84,7 @@ Para la segunda actividad:
 ```powershell
 cd activities/class-02
 npm install
-node src/server.js
+npm start
 ```
 
 Detén cada servidor con `Ctrl + C`. No ejecutes las dos actividades al mismo tiempo porque ambas usan el puerto 3000.

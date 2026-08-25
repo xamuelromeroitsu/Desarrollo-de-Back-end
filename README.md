@@ -2,7 +2,39 @@
 
 Repositorio de aprendizaje de desarrollo backend con Node.js y Express.
 
-**Estudiante:** [Escribe aquí tu nombre]
+**Estudiante:** Xamuel Romero
+
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=flat&logo=express&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=flat&logo=sqlite&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)
+2. flat-square (compacta, esquinas rectas):
+
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=flat-square&logo=express&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)
+3. plastic (brillo degradado):
+
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=plastic&logo=javascript&logoColor=black)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=plastic&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=plastic&logo=express&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=plastic&logo=sqlite&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=plastic&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=plastic&logo=github&logoColor=white)
+4. for-the-badge (rectángulos grandes llamativos):
+
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
+Pega los cuatro seguidos en badge-preview.md, ábrelo con Ctrl+Shift+V y elige el que más te guste.
 
 ## Propósito
 
@@ -14,21 +46,21 @@ Consulta el [proyecto transversal](project/README.md), su [arquitectura](project
 
 ## Seguimiento de entregas
 
-Marca cada actividad a medida que la subas y etiquetes. El tag `class-NN-submission` se crea sobre el commit de la entrega original y no se mueve después.
+Marca cada casilla cuando la actividad esté subida con su tag (en GitHub puedes hacer clic directamente).
 
-| # | Clase | Tema | Estado | Tag |
-| --- | --- | --- | --- | --- |
-| 01 | [Clase 01](activities/class-01/README.md) | Servidor HTTP con Node.js | ✅ Entregada | `class-01-submission` |
-| 02 | [Clase 02](activities/class-02/README.md) | API REST con Express | ✅ Entregada | `class-02-submission` |
-| 03 | Clase 03 | Diseño de API predecible: recursos, contratos y estado | ⬜ Pendiente | — |
-| 04 | Clase 04 | Asincronía, concurrencia conceptual y eventos | ⬜ Pendiente | — |
-| 05 | Clase 05 | Persistencia, SQL y patrón Repository | ⬜ Pendiente | — |
-| 06 | Clase 06 | Validación, errores y responsabilidades transversales | ⬜ Pendiente | — |
-| 07 | Clase 07 | Capas, módulos, cohesión y acoplamiento | ⬜ Pendiente | — |
-| 08 | Clase 08 | Autenticación y autorización | ⬜ Pendiente | — |
-| 09 | Clase 09 | Pruebas, límites y diagnóstico | ⬜ Pendiente | — |
-| 10 | Clase 10 | Monolito, microservicios, eventos y despliegue | ⬜ Pendiente | — |
-| 11 | Clase 11 | Integración, decisiones y defensa técnica | ⬜ Pendiente | — |
+- [x] [Clase 01](activities/class-01/README.md) — Servidor HTTP con Node.js · `class-01-submission`
+- [x] [Clase 02](activities/class-02/README.md) — API REST con Express · `class-02-submission`
+- [ ] Clase 03 — Diseño de API predecible: recursos, contratos y estado
+- [ ] Clase 04 — Asincronía, concurrencia conceptual y eventos
+- [ ] Clase 05 — Persistencia, SQL y patrón Repository
+- [ ] Clase 06 — Validación, errores y responsabilidades transversales
+- [ ] Clase 07 — Capas, módulos, cohesión y acoplamiento
+- [ ] Clase 08 — Autenticación y autorización
+- [ ] Clase 09 — Pruebas, límites y diagnóstico
+- [ ] Clase 10 — Monolito, microservicios, eventos y despliegue
+- [ ] Clase 11 — Integración, decisiones y defensa técnica
+
+**Progreso: 2 / 11**
 
 Ritmo de entrega: commit progresivo → actualizar README → verificar que ejecuta desde cero → push → crear el tag de la semana.
 

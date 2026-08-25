@@ -3,15 +3,16 @@ node_modules/
 
 # Ignorar archivos del entorno y datos sensibles
 .env
+.env.*
 
-# Ignorar manifiesto de proyecto (si aplica a tu caso de uso)
-package.json
+# Base de datos local del proyecto
+*.sqlite
+*.sqlite3
+*.db
 
 # Ignorar todos los registros / logs
 *.log
 
-# Ignorar archivos .txt dentro de la carpeta doc/
-doc/*.txt
-
-# Excepción: NO ignorar este archivo específico aunque esté dentro de doc/
-!doc/importante.txt
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db

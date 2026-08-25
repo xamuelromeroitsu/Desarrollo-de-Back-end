@@ -48,6 +48,11 @@ Comprueba en la salida los estados `200`, `200`, `200` y `404`, respectivamente,
 - `response.end` finaliza la respuesta; después de llamarlo no deben enviarse más datos.
 - Un estado `404` significa que el servidor existe, pero la ruta solicitada no está disponible.
 
+### Actividad extra: ¿dónde debería ocurrir esto?
+
+Clasificación de seis operaciones entre navegador, backend y comunicación:
+ver [clasificacion.md](clasificacion.md).
+
 ## Falla diagnosticada
 
 La falla esperable al probar una ruta no registrada es `404 Not Found`. No es un error de Node.js: es una respuesta intencional que ayuda a distinguir una ruta válida de una inexistente.

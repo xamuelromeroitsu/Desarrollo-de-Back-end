@@ -34,3 +34,4 @@ aqui copiamos nuestros parametros
 <p align="center">
   <img src="./Creando_bd.png" alt="Captura de pantalla">
 </p>
+en el proyecto de segundo trimestre usamos el framework de supabase

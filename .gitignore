@@ -3,7 +3,6 @@ node_modules/
 
 # Ignorar archivos del entorno y datos sensibles
 .env
-.env.*
 
 # Base de datos local del proyecto
 *.sqlite

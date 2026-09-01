@@ -19,7 +19,7 @@ DATABASE_URL=postgresql://postgres.<project-id>:<password>@[aws-0-sa-east-1.pool
 ```
 aqui copiamos nuestros parametros
 <p align="center">
-  <img src="./.env.png" alt="Captura de pantalla">
+  <img src="./assents.env.png" alt="Captura de pantalla">
 </p>
 
 > ⚠️ **Nota de seguridad:** Nunca subas el archivo `.env` con las credenciales reales a GitHub. Asegúrate de incluir `.env` en tu `.gitignore`.
@@ -32,6 +32,6 @@ aqui copiamos nuestros parametros
 * **Conexión Directa:** Toda interacción desde el código backend se realiza utilizando la cadena de conexión administrada en las variables de entorno.
 
 <p align="center">
-  <img src="./Creando_bd.png" alt="Captura de pantalla">
+  <img src="./assents/Creando_bd.png" alt="Captura de pantalla">
 </p>
 en el proyecto de segundo trimestre usamos el framework de supabase

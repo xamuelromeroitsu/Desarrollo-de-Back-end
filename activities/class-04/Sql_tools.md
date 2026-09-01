@@ -9,7 +9,7 @@ Esta guía documenta el proceso y la explicación de los campos para agregar una
 1. Abre Visual Studio Code.
 2. Ve a la extensión **SQLTools** en la barra lateral izquierda e instala.
 
-<img src="./pgtools_herramientas.png.png" alt="Texto alternativo" width="600" />
+![](./pgtools_herramientas.png)
 
 3. Haz clic en **Add New Connection** y selecciona el driver de **PostgreSQL**.
 4. Completa los campos del asistente con la información de tu proyecto de Supabase.
@@ -31,5 +31,8 @@ Esta guía documenta el proceso y la explicación de los campos para agregar una
 - **Username\***: `postgres` (o `postgres.tu_project_ref` si utilizas el modo Pooler).
 - **Use password**: Seleccionar `SQLTools Driver Credentials` para que pida la contraseña al conectar y la almacene de forma segura.
 
+---
 
-al terminar 
+## 3. al agregar los campos y culminar el llenado del formulario y los puertos 
+
+![Conexion con el asistente de supabase y sql tools completada](./parametros_de_sql_tools.png)

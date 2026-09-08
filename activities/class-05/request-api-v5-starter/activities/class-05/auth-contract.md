@@ -84,6 +84,28 @@ nunca del body.
 * Éxito: `200` → `{ "id": "<uuid>", "email": "…", "role": "requester" }`.
 * Nunca devuelve password, hash, salt ni material de firma.
 
+## 🔐 Especificación y Claims del JWT
+
+> El payload del token emitido en el login y verificado en cada petición protegida incluye estrictamente los siguientes *claims*:
+> 
+> 🆔 **`sub` (Subject / Sujeto)**: UUID del usuario en la base de datos. Fuente de verdad indiscutible para el control de propiedad (*ownership* `req.auth.userId`).
+> 
+> 👤 **`role` (Rol)**: Rol autorizado del usuario (`requester` o `agent`). Utilizado por el middleware de autorización.
+> 
+> 🏛️ **`iss` (Issuer / Emisor)**: Identificador del servicio emisor (`backend-course-api`). Previene confusión de emisores.
+> 
+> 🎯 **`aud` (Audience / Audiencia)**: Destinatario previsto (`backend-course-client`). Previene reutilización cruzada de tokens.
+> 
+> ⏱️ **`iat` (Issued At / Emitido en)**: Timestamp Unix del momento de emisión.
+> 
+> ⏳ **`exp` (Expiration Time / Expiración)**: Límite estricto de vida útil de **1 hora** (`3600` segundos).
+
+### ⚖️ Decodificar vs. Verificar
+
+> 🔓 **Decodificar (`jwt.decode`)**: Traduce el Base64url a JSON sin validar criptográficamente. **Inseguro** para autenticación por sí solo, ya que un atacante podría alterar el payload en texto plano (ej. cambiar su rol).
+> 
+> 🔒 **Verificar (`jwt.verify`)**: Decodifica y recalcula la firma criptográfica usando `JWT_SECRET` (algoritmo `HS256`), validando automáticamente expiración (`exp`), emisor (`iss`), audiencia (`aud`) y firma. Cualquier alteración o incumplimiento responde unívocamente con `401 INVALID_TOKEN`.
+
 ## Semántica de errores
 
 El `error.code` va siempre dentro de `{ "error": { "code", "message" } }`.

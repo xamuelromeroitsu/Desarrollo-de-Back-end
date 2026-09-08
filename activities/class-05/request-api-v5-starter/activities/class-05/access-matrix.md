@@ -1,61 +1,78 @@
 # Matriz de acceso — Request API v5
 
-Dos roles exactos: `requester` y `agent`. Sin `admin`.
-nota: agreguegue el administrador para ver la diferencias con el agente, pense que el agente erea igual al admin pero no.
+Dos roles exactos en la implementación: `requester` y `agent`. **No existe
+`admin`**: la columna `Admin` de la tabla es ilustrativa (ejemplo de contraste
+con `agent`) y NO forma parte del contrato fijo del taller.
 
 Completa cada celda con `Sí`, `No`, `Propias` o `Propia y abierta`.
-La matriz puede discutirse, pero la implementación converge en la baseline
-del taller (lámina «Contrato fijo»).
+La implementación converge en la baseline del taller (lámina "Contrato fijo").
 
 ### Matriz de Control de Acceso (RBAC + Ownership)
 
-| Operación | Anónimo | Requester | Agent | Admin |
+| Operación | Anónimo | Requester | Agent | Admin* |
 | :--- | :---: | :---: | :---: | :---: |
-| `POST /auth/register` | **sí** | **no** | **no** | **no** |
-| `POST /auth/login` | **sí** | **no** | **no** | **no** |
-| `GET /auth/me` | **no** | **sí** | **sí** | **sí** |
-| `GET /requests` | **no** | **propias** | **todas** | **todas** |
-| `GET /requests/:id` | **no** | **propias** | **todas** | **todas** |
-| `GET /requests/:id/history` | **no** | **propias** | **todas** | **todas** |
-| `POST /requests` | **no** | **sí** | **no** | **sí** |
-| Editar título/descripción | **no** | **propias (abiertas)** | **no** | **sí** |
-| Cambiar prioridad | **no** | **no** | **sí** | **sí** |
-| Cambiar estado | **no** | **no** | **sí** | **sí** |
+| `POST /auth/register` | Sí | Sí | Sí | — |
+| `POST /auth/login` | Sí | Sí | Sí | — |
+| `GET /auth/me` | No | Sí | Sí | — |
+| `GET /requests` | No | Propias | Todas | Todas |
+| `GET /requests/:id` | No | Propias | Todas | Todas |
+| `GET /requests/:id/history` | No | Propias | Todas | Todas |
+| `POST /requests` | No | Sí | No | Sí |
+| Editar título/descripción | No | Propia y abierta | No | Sí |
+| Cambiar prioridad | No | No | Sí | Sí |
+| Cambiar estado | No | No | Sí | Sí |
+
+\* Columna ilustrativa: el rol `admin` no se implementa. El agente, por
+ejemplo, NO crea solicitudes ni edita el texto del dueño; un `admin`
+hipotético las podría gestionar todas — esa diferencia es lo que se quiere
+mostrar.
 
 > **Leyenda de reglas de seguridad:**
-> * **Propias:** El servidor valida que el ID del creador (`created_by`) sea idéntico al ID del usuario extraído del JWT.
-> * **Propias (abiertas):** Aplica validación de propiedad **Y** verifica que el estado de la solicitud sea estrictamente `open`.
-> * **Separación de funciones:** El rol `Agent` no puede crear ni alterar el texto original de una solicitud.
+> * **Propias:** el servidor valida que el ID del creador (`created_by`) sea
+>   idéntico al ID del usuario extraído del JWT (`req.auth.userId`).
+> * **Propia y abierta:** propiedad **Y** estado estrictamente `open`.
+> * **Todas:** el actor ve toda la colección, incluidas las solicitudes
+>   heredadas sin dueño (`created_by IS NULL`).
+> * **Separación de funciones:** `agent` no puede crear ni alterar el texto
+>   original de una solicitud.
 
 ## Campos controlados por el servidor
 
-Los campos que gestiona de manera exclusiva el backend y no deben ser mutados ni inyectados por el cliente son los siguientes:
+Nunca deben llegar desde el body. Su fuente de verdad es el servidor y
+enviarlos produce **`400 SERVER_CONTROLLED_FIELD`** (rechazo explícito, no se
+ignoran en silencio).
 
-### En el Registro (POST /auth/register):
+### En el Registro (`POST /auth/register`)
 
-role: El cliente jamás puede definir su rol. El servidor asigna forzosamente role = 'citizen' (o Requester).
+* `role`: el cliente jamás lo define. El servidor asigna forzosamente
+  `requester`.
+* `id`, `created_at`, `updated_at`: generados automáticamente por la base de
+  datos.
 
-id, created_at, updated_at: Generados automáticamente por la base de datos.
+### En las Solicitudes (`POST /requests` y `PATCH /requests/:id`)
 
-### En las Solicitudes (POST /requests o PUT /requests/:id):
+* `created_by`: extraído únicamente del payload verificado del token JWT
+  (`req.auth.userId`), nunca del body.
+* `status`: en la creación, el servidor asigna forzosamente `open`.
+* `changed_by`: del JWT (el actor del historial), nunca del body.
+* `id`, `created_at`, `updated_at`: inmutables desde la petición del cliente.
 
-created_by: Extraído únicamente del payload verificado del token JWT (req.user.id).
+### Respuesta exacta del servidor al intentar inyectarlos
 
-status: En la creación, el servidor asigna forzosamente open.
+**Validación estricta (implementada):** el cuerpo se valida con allowlist
+(`additionalProperties`); si llega un campo controlado, responde
+`400 SERVER_CONTROLLED_FIELD`, en lugar de aplicar el valor o ignorarlo
+silenciosamente — ignorar en silencio permitiría escalación de rol.
 
-id, created_at, updated_at: Inmutables desde la petición del cliente.
+## Solicitudes heredadas (`created_by IS NULL`)
 
-### Respuesta exacta del servidor al intentar inyectarlos:
+* **¿Quién las ve?** Exclusivamente `agent` (la columna Admin es ilustrativa).
 
-#### Estrategia 1 (Sanitización Silenciosa - Recomendada por el taller): El servidor ignora o elimina el campo del body antes de procesar o guardar la información y retorna un 201 Created o 200 OK con el valor forzado por el servidor (por ejemplo, si el cliente envía "role": "admin", el servidor crea el usuario con "role": "citizen").
-
-#### Estrategia 2 (Validación Estricta / Schema Validation): Si la API implementa esquemas estrictos (DTOs con additionalProperties: false), retorna un 400 Bad Request indicando que el campo enviado no está permitido.
-
-### Solicitudes heredadas (created_by IS NULL)
-¿Quién las ve?: Exclusivamente los roles Agent y Admin.
-
-#### ¿Por qué?:
-
-Seguridad y Privacidad: Las consultas para usuarios comunes (Requester) filtran de forma estricta por pertenencia mediante la condición created_by = current_user_id. Un registro con created_by IS NULL no coincide con ningún ID de usuario activo, por lo que devolverlo a un usuario común provocaría una fuga de información (data leak).
-
-Gestión Operativa y Auditoría: Corresponden a registros antiguos, migraciones de datos o incidencias generadas automáticamente por el sistema antes de implementar el control de identidad. Los agentes y administradores deben visualizarlas en la cola global para darles seguimiento, asignarles un nuevo propietario o resolverlas.
+**¿Por qué?**
+* **Seguridad y privacidad:** las consultas de un requester filtran por
+  pertenencia estricta (`created_by = <userId del token>`). Un registro con
+  `created_by IS NULL` no coincide con ningún usuario, así que devolverlo a un
+  requester sería una fuga de información (data leak) → responde
+  `404 REQUEST_NOT_FOUND`, idéntico al de un ID inexistente.
+* **Gestión operativa:** son registros previos al control de identidad; los
+  agentes los gestionan en la cola global.

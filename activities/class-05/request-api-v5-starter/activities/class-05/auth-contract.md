@@ -21,6 +21,26 @@ La autorización sobre `/requests` se decide DESPUÉS de la autenticación, seg�
 rol y propiedad (ver `docs/http-contract.md` y la matriz de acceso). Aquí solo
 se documentan los endpoints de auth.
 
+## Controles del servidor
+
+Campos que el cliente JAMÁS debe enviar: su valor lo decide el backend, nunca
+el body. Enviarlos produce `400 SERVER_CONTROLLED_FIELD` — rechazo explícito,
+no se ignoran en silencio.
+
+| Campo | Fuente de verdad | Si el cliente lo envía |
+| ----- | ---------------- | ---------------------- |
+| `role` | servidor, siempre `requester` | `400 SERVER_CONTROLLED_FIELD` |
+| `id` | base de datos (UUID) | `400 SERVER_CONTROLLED_FIELD` |
+| `createdAt` / `updatedAt` | servidor | `400 SERVER_CONTROLLED_FIELD` |
+| `createdBy` | payload verificado del JWT (`req.auth.userId`) | `400 SERVER_CONTROLLED_FIELD` |
+| `changedBy` | payload verificado del JWT | `400 SERVER_CONTROLLED_FIELD` |
+| `passwordHash` | servidor (hash derivado) | `400 SERVER_CONTROLLED_FIELD` |
+| `status` | servidor: `open` al nacer, máquina de estados después | `400 SERVER_CONTROLLED_FIELD` |
+
+La identidad que da valor a `createdBy`/`changedBy` proviene del token
+verificado en el middleware (`authenticate.js`), el único origen confiable —
+nunca del body.
+
 ## POST /auth/register
 
 * Acceso: **Público** — no requiere token.

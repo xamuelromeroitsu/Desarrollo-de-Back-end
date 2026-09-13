@@ -167,3 +167,51 @@ RESULT: 3/3
   `400 SERVER_CONTROLLED_FIELD` (evita escalación de rol).
 * **Versionado del checkpoint:** el tag apunta al commit donde el validador
   pasa 3/3, no a un commit arbitrario.
+
+---
+
+## 5. 🗺️ Plan Maestro de Implementación — Request API v5
+
+### 🔨 Estación 2 & 3: Registro y Contraseñas Seguras
+* **Objetivo:** Implementar la función `register` en `auth.service.js` y conectar el almacenamiento con `users.store.js`.
+* **Pasos:**
+  1. **Allowlist:** Validar que el `req.body` contenga únicamente `email` y `password`. Si viene cualquier otro campo (ej. `role`, `id`, `createdAt`), lanzar `AppError('contract', 'SERVER_CONTROLLED_FIELD', '...')`.
+  2. **Normalización del Email:** Aplicar `email.trim().toLowerCase()`. Si está vacío o tiene formato inválido, lanzar `AppError('contract', 'INVALID_EMAIL', '...')`.
+  3. **Validación del Password:** Comprobar que la longitud del password esté entre `PASSWORD_MIN_LENGTH` (15) y `PASSWORD_MAX_LENGTH` (128). Si no, lanzar `AppError('contract', 'INVALID_PASSWORD', '...')`.
+  4. **Hashing (Estación 3):** Llamar a `await hashPassword(password)` para cifrar la contraseña con *scrypt*.
+  5. **Persistencia y Duplicados:** Llamar a `insertUser({ email, passwordHash })`. Si PostgreSQL retorna el error `23505` (violación de unique constraint), atraparlo y lanzar `AppError('domain', 'ACCOUNT_CANNOT_BE_CREATED', 'The account cannot be created with the supplied information.')`.
+  6. **Respuesta:** Retornar el objeto de éxito (`201 Created`) con los datos públicos del usuario.
+* **Verificación:** `npm run validate:class-05 -- --stage register` y `npm run validate:class-05 -- --stage password`
+
+### 🔑 Estación 4: Tokens JWT (`issueToken`, `verifyToken`) y Login
+* **Objetivo:** Programar la emisión y verificación criptográfica de tokens y el endpoint de autenticación.
+* **Pasos:**
+  1. **`token.js` - `issueToken(user)`:** Usar `SignJWT` con la librería `jose` para firmar el token con `HS256` y `SECRET_KEY`, incluyendo los claims: `sub` (`user.id`), `role` (`user.role`), `iss`, `aud`, `iat` y `exp` (3600 segundos / 1 hora).
+  2. **`token.js` - `verifyToken(token)`:** Usar `jwtVerify(token, SECRET_KEY, { algorithms: ['HS256'], issuer, audience })` para validar la firma, vigencia y claims.
+  3. **`auth.service.js` - `login(body)`:** 
+     * Buscar al usuario en la base de datos por su email normalizado.
+     * Si no existe, o si `await verifyPassword(password, user.passwordHash)` retorna `false`, lanzar un error unificado y genérico: `AppError('auth', 'INVALID_CREDENTIALS', 'Email or password is incorrect.')` (anti-enumeración).
+     * Si es correcto, generar el token con `issueToken(user)` y retornar `200 OK` con `{ accessToken, tokenType: 'Bearer', expiresIn: 3600 }`.
+* **Verificación:** `npm run validate:class-05 -- --stage login`
+
+### 🛡️ Estación 5: El Guardián de Rutas (`authenticate` middleware)
+* **Objetivo:** Programar `src/middleware/authenticate.js` para proteger los endpoints privados.
+* **Pasos:**
+  1. Leer el header `Authorization` de la petición.
+  2. Verificar que exista y comience con el esquema exacto `Bearer <token>`. Si falta o usa `Basic`, lanzar `AppError('auth', 'AUTHENTICATION_REQUIRED', '...')`.
+  3. Extraer el token y ejecutar `await verifyToken(token)`. Si hay cualquier fallo criptográfico o de expiración, atraparlo y lanzar `AppError('auth', 'INVALID_TOKEN', '...')`.
+  4. Asignar la identidad verificada al objeto de la petición: `req.auth = { userId: payload.sub, role: payload.role }`.
+  5. Llamar a `next()`.
+* **Verificación:** `npm run validate:class-05 -- --stage authentication`
+
+### 👥 Estaciones 6 & 7: Políticas de Propiedad y Roles (`ownership` & `authorization`)
+* **Objetivo:** Asegurar el aislamiento de datos por usuario (`requester`), la gestión global por parte de los operadores (`agent`), y la validación atómica en mutaciones.
+* **Pasos:**
+  1. **Scoping en consultas (`requests.store.js`):** Ajustar las consultas `SELECT` para que, si el actor es `requester`, filtre estrictamente por `created_by = userId`. Si es `agent`, permita ver toda la colección (incluyendo registros heredados con `created_by IS NULL`).
+  2. **Protección IDOR (`GET /requests/:id`):** Si un requester intenta acceder a un ticket ajeno o inexistente, retornar un idéntico `404 REQUEST_NOT_FOUND`.
+  3. **Creación de Solicitudes (`POST /requests`):** Extraer el `createdBy` únicamente de `req.auth.userId`. Bloquear a los agentes con `403 FORBIDDEN` si intentan crear tickets.
+  4. **Mutación atómica (`PATCH /requests/:id`):** Validar que un requester solo edite contenido propio y en estado `open`. Si intenta enviar un body mixto que toque campos de agente (como `priority` o `status`), rechazar toda la petición con `403 FORBIDDEN` sin aplicar cambios parciales.
+* **Verificación:**
+  * `npm run validate:class-05 -- --stage ownership`
+  * `npm run validate:class-05 -- --stage authorization`
+  * `npm run validate:class-05` *(Prueba reina final)*

@@ -91,8 +91,7 @@ Significado:
 Una corrida de pruebas o del validador se interrumpió antes de su cleanup.
 
 Acción:
-Vuelve a correr `npm test` o `npm run validate:class-06` (limpian lo suyo al
-final). Si el residuo persiste, bórralo por email EXACTO en el SQL Editor —
+Vuelve a correr `npm test` o `npm run validate:class-06` (limpian lo suyo al final). Si el residuo persiste, bórralo por email EXACTO en el SQL Editor —
 primero su historial, luego sus solicitudes, luego el usuario.
 
 Qué NO hacer:
@@ -100,3 +99,22 @@ Qué NO hacer:
 
 Pregunta:
 ¿Cómo distingues una fila del seed, una de pruebas y una tuya?
+las filas seed usan correos predeterminados en @seed.example.test en las filas de prueba usan correos que empienzan dif ejemplo class ... palabras que no serian de un correo normal si no de prueba
+
+las filas tuyas son las que incluyes con tu nombre@seed.example.test
+como puede ser un ejemplo algunos desarrolladores usan su correo personal pero no es tan recomendado por eso usan aplicaciones que te dan correos gratuitos que funciona reales por 24 h o una semana 
+
+Antes de borrar algo, revisa el correo y las relaciones asociadas. Nunca uses:
+
+DELETE FROM users;
+
+Eso podría borrar también tus datos y los del seed.
+
+
+correos de pruebas:
+Guerrilla Mail: bandeja temporal, normalmente algunas horas.
+YOPmail: bandejas desechables; no requiere registro.
+Mail.tm: cuenta temporal gratuita, puede durar más tiempo si mantienes acceso.
+SimpleLogin: alias gratuitos que pueden durar indefinidamente, con límite de aliases.
+
+Ten en cuenta que muchos servicios bloquean correos temporales. No los uses para bancos, recuperación de cuentas o información importante.

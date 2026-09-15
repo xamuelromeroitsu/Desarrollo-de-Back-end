@@ -16,6 +16,18 @@ El mensaje del seed. Si dice `42P01`, faltan las migraciones.
 Acción:
 `npm run db:migrate` (si faltaba esquema) y luego `npm run db:seed`.
 
+DATABASE SEED
+
+Users
+- 2 requesters ready
+- 1 agent ready
+
+Requests
+- 6 requests ready
+- 15 history events ready
+
+Seed completed successfully. 
+
 Qué NO hacer:
 No insertes usuarios del taller a mano por el editor de Supabase.
 

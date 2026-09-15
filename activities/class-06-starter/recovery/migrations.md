@@ -20,6 +20,21 @@ No modifiques la ruta de Express para ocultar el error.
 
 Pregunta:
 ¿Por qué este error demuestra que SÍ llegamos a PostgreSQL?
+por que la base de datos esta conectada  creo las migraciones correctamente y al darle el msj 
+
+## DATABASE MIGRATIONS
+
+**Migraciones aplicadas** — 2ª ejecución de `npm run db:migrate` (omite lo ya aplicado)
+
+| # | Migración | Qué crea | Estado |
+|:-:|-----------|----------|:------:|
+| 001 | `001_create_users.sql` | Tabla `users` (cuentas, roles) | ✅ SKIPPED |
+| 002 | `002_create_requests.sql` | Tabla `requests` (FK → users) | ✅ SKIPPED |
+| 003 | `003_create_request_history.sql` | Tabla `request_history` (FK → requests, users) | ✅ SKIPPED |
+| 004 | `004_add_constraints_and_indexes.sql` | CHECKs de valores + índices | ✅ SKIPPED |
+
+ya cree las migraciones de la base y al darle el comando otra vez sale que ya fueron creadas exitosamente
+
 
 ## Migración pendiente
 

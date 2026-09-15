@@ -10,17 +10,27 @@
 
 ## Tu tablero
 
-```text
-[ ] Entorno      .env configurado, doctor conectando
-[ ] Migraciones  npm run db:migrate (x2: la segunda omite)
-[ ] Seed         npm run db:seed + datos visibles en Supabase
-[ ] Aplicación   npm run dev responde
-[ ] Pruebas      npm test en verde ANTES de tocar nada
-[ ] Bug          tickets/BUG-106.md corregido + prueba de regresión
-[ ] Feature      tickets/FEATURE-206.md implementado
-[ ] Validación   npm run validate:class-06 → PASSED
-[ ] Reflexión    activities/class-06/work-log.md completo
-```
+| # | Tarea | Evidencia | Estado |
+|---|-------|-----------|:------:|
+| 1 | Entorno | `.env` configurado, `npm run class-06:doctor` conectando | ✅ |
+| 2 | Migraciones | `npm run db:migrate` ×2 (la 2ª omite) | ✅ |
+| 3 | Seed | `npm run db:seed` + datos visibles en Table Editor | ⬜ |
+| 4 | Aplicación | `npm run dev` responde | ⬜ |
+| 5 | Pruebas | `npm test` en verde ANTES de tocar nada | ✅ |
+| 6 | Bug | `BUG-106` corregido + prueba de regresión | ⬜ |
+| 7 | Feature | `FEATURE-206` implementado | ⬜ |
+| 8 | Validación | `npm run validate:class-06` → PASSED | ⬜ |
+| 9 | Reflexión | `activities/class-06/work-log.md` completo | ⬜ |
+
+**Verificación del entorno** — salida esperada de `npm run class-06:doctor`
+
+| # | Verificación | Estado |
+|:-:|--------------|:------:|
+| 01/05 | Environment file found | ✅ PASS |
+| 02/05 | Required variables found | ✅ PASS |
+| 03/05 | Database connection established | ✅ PASS |
+| 04/05 | Database is reachable | ✅ PASS |
+| 05/05 | Application configuration loaded | ✅ PASS |
 
 ## Puesta en marcha
 

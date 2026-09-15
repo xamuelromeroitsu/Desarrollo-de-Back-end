@@ -81,7 +81,13 @@ Qué NO hacer:
 No cambies de red a ciegas ni desactives tu firewall.
 
 Pregunta:
-¿Por qué la MISMA cadena puede funcionar en tu casa y fallar en el aula?
+## ¿Por qué la MISMA cadena puede funcionar en tu casa y fallar en el aula?
+
+R Porque el problema puede estar en la red, no en la cadena.
+
+En casa, tu red quizá permite conexiones IPv6 y la cadena funciona. En el aula, la red puede permitir solo IPv4, bloquear ciertos puertos o tener un firewall. Por eso la misma cadena falla allí, aunque sea correcta.
+
+En ese caso, usa en Supabase la cadena del Session pooler, que está diseñada para funcionar sobre IPv4.
 
 ## Proyecto de Supabase no disponible
 
@@ -100,3 +106,7 @@ No crees un segundo proyecto "porque el primero no sirve".
 
 Pregunta:
 ¿Dónde vive realmente tu información mientras el proyecto está pausado?
+
+pienso que en local host pero en realidad la información sigue almacenada en la base de datos de Supabase, dentro de sus servidores.
+
+Cuando el proyecto está pausado, la base de datos se detiene temporalmente para ahorrar recursos, pero los datos no se borran. Al restaurar el proyecto, la información vuelve a estar disponible.

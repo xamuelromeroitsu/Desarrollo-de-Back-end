@@ -42,6 +42,16 @@ No inventes un secreto corto a mano; no compartas la URL con nadie (IA incluida)
 Pregunta:
 ¿Qué puede hacer otra persona con tu cadena de conexión completa?
 
+Porque la cadena de conexión completa normalmente incluye el servidor, usuario, puerto y contraseña de la base de datos.
+
+Con ella, otra persona podría:
+
+Conectarse a tu base de datos.
+Leer información privada.
+Modificar o borrar datos.
+Crear usuarios o cambiar estructuras, según los permisos.
+Por eso nunca debes compartirla, aunque parezca una simple URL. Si la compartiste accidentalmente, cambia o restablece inmediatamente la contraseña de Supabase y actualiza tu .env.
+
 ## Puerto ocupado
 
 Síntoma:
@@ -69,6 +79,9 @@ Pegaste tu `DATABASE_URL` o `JWT_SECRET` en un chat, issue o captura.
 
 Significado:
 Ese valor ya no es secreto, sin importar si borras el mensaje.
+No debes pasarla a una IA porque la cadena completa contiene credenciales reales, especialmente la contraseña de la base de datos.
+
+Si la compartes, podría quedar registrada en el historial del chat, registros técnicos o sistemas de análisis. Aunque borres el mensaje, ya no puedes garantizar que nadie la haya visto. Con esa información alguien podría acceder, copiar, modificar o borrar tus datos.
 
 Acción:
 Supabase → Settings → Database → restablece la contraseña; genera un
@@ -79,3 +92,5 @@ No asumas que "nadie lo vio". Rotar cuesta un minuto.
 
 Pregunta:
 ¿Por qué borrar el mensaje no des-expone el secreto?
+
+por que queda guardado en los servidores de donde se trabajo la ia y recordar que muchas app no borran definitivo algunos metdos si no que las inactivan

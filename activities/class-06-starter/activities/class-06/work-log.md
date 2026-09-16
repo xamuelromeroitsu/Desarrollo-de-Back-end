@@ -176,6 +176,86 @@ What action does it perform?
 What does it check?
 Which rule does it protect?
 
+## Reading a failure — controlled exercise / Lectura de un error — ejercicio controlado
+
+1. **What is the NAME of the failing test? / ¿Cuál es el NOMBRE del test que falla?**
+   `GET /requests/42 returns the request for its owner`
+
+
+2. **What value did it EXPECT? / ¿Qué valor ESPERABA?**
+    `200`
+
+3. **What value did it GET? / ¿Qué valor OBTUVO?**
+    `404`
+   
+
+4. **In which FILE and LINE is the assertion? / ¿En qué ARCHIVO y LÍNEA está la aserción?**
+    `scripts\fixtures\reading-a-failure.test.js` (line 17)
+  
+
+5. **Did the failure happen in Prepare, Act or Check? / ¿El fallo ocurrió en Prepare, Act o Check?**
+    **Check** (failed during the `strictEqual` assertion verifying the HTTP status code)
+    **Check** (falló durante la aserción `strictEqual` al verificar el código de estado HTTP)
+
+6. **Write ONE hypothesis before changing anything / Escribe UNA hipótesis antes de cambiar nada**
+   * The request failed to authenticate because the required authorization header was omitted during test setup, causing the endpoint to fail routing or resource retrieval and return `404` instead of `200`.
+   * La petición falló al autenticarse porque se omitió el encabezado de autorización requerido durante la preparación de la prueba, lo que hizo que el endpoint fallara en el enrutamiento o la búsqueda del recurso y devolviera un `404` en lugar de `200`.
+
+
+1.e hace --test -concurrency igual a uno lo que hace es que hace las pruebas en serie una por uno por que en paralelo necesita o hace todo al mismo tiempo y pueden a ver conflictos en las rutas o al envio de info.
+
+Evita interferencias: Previene que múltiples tests modifiquen las mismas tablas al mismo tiempo, evitando fallos aleatorios.
+
+Asegura un estado limpio: Al ejecutar un test a la vez, se garantiza que la base de datos esté predecible, ordenada e aislada antes de iniciar el siguiente.
+
+2.el hook after siempre corre aunque una prueba falle/fail  o pase con extito/pass, el cleanup vive ahi verifica se detiene y salta de golpe fuera de la prueba que se esta haciendo 
+
+after = despues ejecuta una funcion despues de que la prueba se halla finalizado
+---
+cleanup = limpieza borra los cambios temporales creados por la prueba peticiones ficticias usuarios de prueba y deja la base de datos impecable.
+---
+hook = gacho disparador empieza termina ... para jecutar codigo automatico 
+---
+setup = (configuración / preparación)
+Es el proceso opuesto al cleanup. Ocurre antes de la prueba para dejar listos los datos que el test necesita para funcionar.
+
+assert / assertion (aserción / afirmación)
+
+3. para ejecutar los archivos de prueba usando node 
+
+## 🏁 Comando exacto y salida esperada
+
+```powershell
+# Desde activities/class-06-starter/   (equivalente a:  npm run test:auth)
+node --test --test-concurrency=1 test/auth.test.js
+```
+**Esperado:** ✔ 7 tests passed · 0 failed — *ejemplo de salida:*
+
+```txt
+▶ Running auth.test.js
+
+✔ registering a new account answers 201 with role requester (28ms)
+✔ registering the same email twice answers a generic 409 (15ms)
+✔ sending a role at registration is rejected explicitly (12ms)
+✔ logging in with valid credentials answers a Bearer token (22ms)
+✔ logging in with a wrong password answers a generic 401 (18ms)
+✔ GET /auth/me reports the identity carried by the token (24ms)
+✔ GET /auth/me without a token answers 401 (10ms)
+
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 246
+```
+
+> ✅ **Contraste exitoso** si ves `pass 7 / fail 0`. Si algún caso falla,
+> sigue la cadena `auth.routes.js → auth.service.js → token.js/password.js`
+> de la tarjeta del recorrido — nunca diagnostiques al revés.
+
 ## AI assistance
 
 What did AI help me understand?

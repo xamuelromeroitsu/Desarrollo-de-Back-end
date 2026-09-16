@@ -1,2 +1,89 @@
 Pega aqui la salida final de: npm run validate:class-06
 (la salida no contiene secretos; no agregues capturas de tu .env)
+
+PS C:\Users\user\Desktop\Desarrollo-de-Back-end\activities\class-06-starter> npm run validate:class-06
+
+> class-06-request-api@6.0.0 validate:class-06
+> node scripts/validate-class-06.js
+
+CLASS 06 FINAL VALIDATION
+
+Environment
+[01/12] Database is reachable .............. PASS
+[02/12] Migrations are complete ............ PASS
+[03/12] Seed data is available ............. PASS
+
+Regression
+[04/12] Valid empty collection returns 200 .. FAIL
+
+Expected:
+A valid filter with zero matches answers 200.
+
+Received:
+GET /requests?status=closed answered 404.
+
+Review:
+- the difference between a missing resource and an empty collection
+- where the collection route decides what to do with an empty array
+- the class 3 contract for collections
+
+[05/12] Empty collection returns [] ........ FAIL
+
+Expected:
+The body of an empty collection is exactly [].
+
+Received:
+The body is not an empty array.
+
+Review:
+- what the route sends when there are no rows
+
+
+History endpoint
+[06/12] Authentication is required ......... PASS
+[07/12] Owner can read history ............. FAIL
+
+Expected:
+The owner reads the full history of their own request (3 events).
+
+Received:
+It answered 404 with no event(s).
+
+Review:
+- the route registration
+- the history query
+- whether PATCH records events
+
+[08/12] Stranger cannot read history ....... FAIL
+
+Expected:
+A stranger gets the SAME 404 as a missing request.
+
+Received:
+Foreign answered 404 (undefined); missing answered 404 (undefined).
+
+Review:
+- the existing visibility policy (reuse it, do not invent a new rule)
+- the class 5 contract: existence is not revealed
+
+[09/12] Agent can read history ............. FAIL
+
+Expected:
+An agent can read any history.
+
+Received:
+It answered 404.
+
+Review:
+- the policy for agents
+
+[10/12] Missing request returns 404 ........ PASS
+[11/12] Events are ordered correctly ....... FAIL
+Unexpected validator error: Cannot read properties of null (reading 'map')
+
+[12/12] Sensitive information is hidden .... PASS
+
+Cleanup
+Temporary validation data removed successfully.
+
+FINAL RESULT: FAILED (6/12)

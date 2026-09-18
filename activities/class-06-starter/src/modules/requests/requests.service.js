@@ -7,15 +7,17 @@ import { withTransaction } from '../../database/transaction.js';
 import {
   findAll,
   findById,
+  findHistory,
   insertRequest,
   updateRequest,
   insertHistoryEvent
 } from './requests.store.js';
-import { mapRequestRow } from './request.mapper.js';
+import { mapRequestRow, mapHistoryEventRow } from './request.mapper.js';
 import { STATUSES, isValidStatus, isTerminal, canTransition } from './request-status.js';
 import {
   canListAllRequests,
   canViewRequest,
+  canViewHistory,
   canCreateRequest,
   canEditContent,
   canChangePriority,
@@ -84,6 +86,20 @@ export async function getRequest(actor, id) {
   const request = mapRequestRow(row);
   if (!canViewRequest(actor, request)) throw notFound(id);
   return request;
+}
+
+//  Reuses findById / canViewHistory / findHistory / mapHistoryEventRow — no new SQL or policy.  reutiliza las piezas existentes, no hay SQL ni política nueva.)
+//  Missing or foreign request → same 404 (never reveal existence).  inexistente o extraño → mismo 404, no se revela existencia.)
+// Order and JSON shape already come from the store/mapper.  orden y formato ya vienen del store/mapper.)
+export async function getRequestHistory(actor, id) {
+  const row = await findById(id);
+  if (!row) throw notFound(id);
+
+  const request = mapRequestRow(row);
+  if (!canViewHistory(actor, request)) throw notFound(id);
+
+  const events = await findHistory(id);
+  return events.map(mapHistoryEventRow);
 }
 
 export async function createRequest(actor, input) {

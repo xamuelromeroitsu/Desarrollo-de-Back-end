@@ -1,0 +1,32 @@
+meta {
+  name: Crear solicitud
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/requests
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "title": "Mi solicitud desde Bruno",
+    "description": "Creada con la colección test-api.",
+    "priority": "high"
+  }
+}
+
+script:post-response {
+  const json = res.getBody();
+  bru.setVar("requestId", json.id);
+}
+
+// Prueba: un requester crea una solicitud → 201 con status open y createdBy propio.
+// El script guarda el id creado en {{requestId}} para patch-status y history.
+// No enviar status ni createdBy: campos controlados por el servidor (400).

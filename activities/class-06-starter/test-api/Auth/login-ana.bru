@@ -1,0 +1,26 @@
+meta {
+  name: Login Ana (requester)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "ana.requester.seed@example.test",
+    "password": "ana clave del taller 06"
+  }
+}
+
+script:post-response {
+  const json = res.getBody();
+  bru.setVar("token", json.accessToken);
+}
+
+// Prueba: credenciales correctas → 200 con Bearer + accessToken de 3 segmentos.
+// El script guarda el token en {{token}} para que las demás peticiones lo usen.

@@ -1,0 +1,29 @@
+meta {
+  name: Cambiar estado
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{baseUrl}}/requests/{{requestId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "status": "in_progress"
+  }
+}
+
+// Prueba: solo un AGENT puede cambiar el estado (403 si el token es de un requester).
+// La transición debe respetar la máquina de estados (request-status.js):
+//   open → in_progress es válida; de terminales (closed/cancelled) no se sale.
+// El cambio registra un evento en request_history (changedBy = token).
+
+// Para probar con Maria: correr login-maria primero, luego ajustar {{requestId}}
+// con la respuesta de create.bru (o con un id real del list.bru).

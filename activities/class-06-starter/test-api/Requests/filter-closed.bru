@@ -1,0 +1,20 @@
+meta {
+  name: Filtrar por status (BUG-106)
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/requests?status=closed
+  auth: bearer
+  body: none
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+// Prueba: filtro válido sin coincidencias → 200 con [] (colección vacía ≠ recurso inexistente).
+// Con Ana (requester): no tiene closed → 200 [].
+// (Antes del fix esto devolvía 404 REQUEST_NOT_FOUND — BUG-106.)
+// Filtros inválidos (p. ej. status=zzz) → 400 INVALID_FILTER.

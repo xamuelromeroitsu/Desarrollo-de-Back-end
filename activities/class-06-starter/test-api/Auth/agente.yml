@@ -1,0 +1,18 @@
+info:
+  name: agente
+  type: http
+
+http:
+  method: GET
+  url: http://localhost:3000/requests/:id/history
+  params:
+    - name: id
+      value: ""
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

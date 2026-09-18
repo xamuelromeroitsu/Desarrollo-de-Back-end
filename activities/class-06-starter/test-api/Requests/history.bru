@@ -1,0 +1,24 @@
+meta {
+  name: Historial de la solicitud
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/requests/{{requestId}}/history
+  auth: bearer
+  body: none
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+// Prueba: lectura del historial de eventos.
+// - Con el dueño (Ana, requester): 200 con los eventos de SU solicitud.
+// - Con un agente (Maria): 200 con el historial de cualquiera.
+// - Un extraño: 404 IDÉNTICO al de una solicitud inexistente (no revela existencia).
+
+// IMPORTANTE: este endpoint NO está implementado todavía en la clase 06
+// (las piezas existen en store/mapper/policy pero no hay ruta ni servicio).
+// Hoy responde 404; al implementarlo debe dar 200 con los eventos ordenados.

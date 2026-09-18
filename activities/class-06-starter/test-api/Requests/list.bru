@@ -1,0 +1,20 @@
+meta {
+  name: Listar solicitudes
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/requests
+  auth: bearer
+  body: none
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+// Prueba: la colección varía según el rol del token.
+// - Con Maria (agent): 200 con TODAS las solicitudes.
+// - Con Ana (requester): 200 solo con las suyas (el alcance se aplica en el SQL del store).
+// Sin token → 401.

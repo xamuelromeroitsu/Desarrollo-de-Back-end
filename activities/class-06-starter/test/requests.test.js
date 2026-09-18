@@ -101,3 +101,53 @@ test('returns an empty array when a valid filter has no matches', async () => {
   assert.equal(response.status, 200);
   assert.deepEqual(response.body, []);
 });
+
+test('the owner can read the history of their own request', async () => {
+  const owner = await createUser({ name: 'ownhis' });
+  const token = await loginAs(owner);
+  const created = await createRequestAs(token);
+
+  const response = await request(app)
+    .get(`/requests/${created.id}/history`)
+    .set('Authorization', `Bearer ${token}`);
+
+  assert.equal(response.status, 200);
+  assert.ok(Array.isArray(response.body));
+  assert.ok(response.body.length >= 1);
+});
+
+test('a stranger gets the same 404 as a missing request for history', async () => {
+  const owner = await createUser({ name: 'victimhis' });
+  const stranger = await createUser({ name: 'strangerhis' });
+  const ownerToken = await loginAs(owner);
+  const strangerToken = await loginAs(stranger);
+  const savedRequest = await createRequestAs(ownerToken);
+
+  const strangerResponse = await request(app)
+    .get(`/requests/${savedRequest.id}/history`)
+    .set('Authorization', `Bearer ${strangerToken}`);
+
+  const missingResponse = await request(app)
+    .get('/requests/999999/history')
+    .set('Authorization', `Bearer ${strangerToken}`);
+
+  assert.equal(strangerResponse.status, 404);
+  assert.equal(missingResponse.status, 404);
+  assert.equal(strangerResponse.body.error.code, missingResponse.body.error.code);
+});
+
+test('an agent can read the history of any request', async () => {
+  const owner = await createUser({ name: 'ownerhis' });
+  const agent = await createUser({ name: 'agenthis', role: 'agent' });
+  const ownerToken = await loginAs(owner);
+  const agentToken = await loginAs(agent);
+  const created = await createRequestAs(ownerToken);
+
+  const response = await request(app)
+    .get(`/requests/${created.id}/history`)
+    .set('Authorization', `Bearer ${agentToken}`);
+
+  assert.equal(response.status, 200);
+  assert.ok(Array.isArray(response.body));
+  assert.ok(response.body.length >= 1);
+});

@@ -73,10 +73,7 @@ export async function listRequests(actor, filters) {
     : { ...filters, createdBy: actor.userId };
 
   const rows = await findAll(scope);
-  if (rows.length === 0) {
-    // Nothing matched the given filters.
-    throw new AppError('resource', 'REQUEST_NOT_FOUND', 'No requests matched the given filters.');
-  }
+  
   return rows.map(mapRequestRow);
 }
 

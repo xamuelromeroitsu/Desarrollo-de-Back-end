@@ -1,0 +1,115 @@
+Pega aquí la salida REAL y COMPLETA de:
+
+    npm run validate:class-07
+
+Debe incluir las 12 verificaciones con sus secciones (Baseline, Input and
+errors, Traceability, Operation), la línea de Cleanup y el FINAL RESULT.
+
+Antes de guardar, revisa que no haya ninguna credencial pegada por error:
+ni DATABASE_URL, ni JWT_SECRET, ni tokens. Si aparece algo así,
+reemplázalo por [configured].
+
+
+
+agregando los comandos y resultados de las migraciones
+
+
+n class-07:doctor
+
+> class-07-request-api@7.0.0 class-07:doctor
+> node scripts/check-environment.js
+
+CLASS 07 ENVIRONMENT CHECK
+
+[01/07] Environment configured ............... PASS
+[02/07] Database connection established ...... PASS
+[03/07] Migrations available ................. PASS
+[04/07] Seed data available .................. PASS
+[05/07] Application can be imported .......... PASS
+[06/07] Test runner available ................ PASS
+[07/07] Incident fixtures available .......... PASS
+
+Environment ready for incident response.
+sitiouno@WKS4111MMG:~/Público/Desarrollo-de-Back-end/activities/class-07-starter$ ^C
+sitiouno@WKS4111MMG:~/Público/Desarrollo-de-Back-end/activities/class-07-starter$ npm run db:migrate
+
+> class-07-request-api@7.0.0 db:migrate
+> node scripts/migrate.js
+
+DATABASE MIGRATIONS
+
+[SKIPPED] 001_create_users.sql
+[SKIPPED] 002_create_requests.sql
+[SKIPPED] 003_create_request_history.sql
+[SKIPPED] 004_add_constraints_and_indexes.sql
+
+
+dice skipped por que este proyecto esta usando la misma base de datos que usamos en la class 6
+
+No pending migrations.
+sitiouno@WKS4111MMG:~/Público/Desarrollo-de-Back-end/activities/class-07-starter$ npm run db:seed
+
+> class-07-request-api@7.0.0 db:seed
+> node scripts/seed.js
+
+DATABASE SEED
+
+Users
+- 2 requesters ready
+- 1 agent ready
+
+Requests
+- 6 requests ready
+- 15 history events ready
+
+Seed completed successfully.
+sitiouno@WKS4111MMG:~/Público/Desarrollo-de-Back-end/activities/class-07-starter$ npm test
+
+> class-07-request-api@7.0.0 test
+> node --test --test-concurrency=1 'test/*.test.js'
+
+✔ registering a new account answers 201 with role requester (1419.139317ms)
+✔ registering the same email twice answers a generic 409 (329.828993ms)
+✔ sending a role at registration is rejected explicitly (9.906783ms)
+✔ logging in with valid credentials answers a Bearer token (432.902037ms)
+✔ logging in with a wrong password answers a generic 401 (377.127648ms)
+✔ GET /auth/me reports the identity carried by the token (487.426183ms)
+✔ GET /auth/me without a token answers 401 (7.636666ms)
+✔ an alphabetic id answers 400 INVALID_REQUEST_ID, not 500 (1.661717ms) # TODO
+✔ decimal, zero and negative ids are rejected the same way (0.236797ms) # TODO
+✔ a well-formed id that matches nothing still answers 404 (0.235815ms) # TODO
+✔ an invalid priority answers 400 INVALID_PRIORITY before touching SQL (0.256263ms) # TODO
+✔ a valid priority change still works after the fix (1.323119ms) # TODO
+✔ an unexpected error answers a generic 500 without internal details (0.253383ms) # TODO
+✔ every error body shares the same shape: error.code, error.message, requestId (0.357901ms) # TODO
+✔ GET /health answers 200 ok without touching PostgreSQL (1.603515ms) # TODO
+✔ GET /ready answers 200 when PostgreSQL responds (0.237834ms) # TODO
+✔ GET /ready answers 503 when the database check fails (0.226002ms) # TODO
+✔ the readiness response never reveals connection details (0.250081ms) # TODO
+✔ the history requires authentication (40.375909ms)
+✔ the owner can read the history, oldest event first (3019.857186ms)
+✔ a stranger requester gets the same 404 as a missing request (2848.226738ms)
+✔ an agent can read any history (2335.986605ms)
+✔ a request without events answers 200 with an empty array (663.477408ms)
+✔ history events never expose sensitive information (2533.530807ms)
+✔ a requester can create a request and becomes its owner (1291.281412ms)
+✔ the owner can read their own request (1031.278433ms)
+✔ a requester cannot access another user request (1398.062439ms)
+✔ the collection requires a Bearer token (9.62681ms)
+✔ a requester cannot change the priority, even of their own request (969.8222ms)
+✔ an agent can move a request through a valid transition (1772.909111ms)
+✔ returns an empty array when a valid filter has no matches (463.99615ms)
+✔ every response carries an X-Request-Id header (1.659973ms) # TODO
+✔ an error body carries the same requestId as the header (0.228036ms) # TODO
+✔ a well-formed client X-Request-Id is kept (0.234165ms) # TODO
+✔ a suspicious client X-Request-Id is replaced, never trusted (0.232132ms) # TODO
+✔ the log line of a request carries the same requestId as the response (0.27715ms) # TODO
+✔ the Authorization header and the token never reach the log (0.246624ms) # TODO
+ℹ tests 37
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 17
+ℹ duration_ms 24117.277162

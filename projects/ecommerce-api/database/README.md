@@ -165,6 +165,14 @@ users ──< orders ──< order_items >── products
                 └──< order_events
 ```
 
+
+Relación	Cómo se lee	Cardinalidad
+users ──< orders	Un usuario tiene muchos pedidos	1:N
+orders ──< order_items	Un pedido tiene muchos ítems (líneas)	1:N
+order_items >── products	Muchos ítems apuntan a un producto	N:1
+orders ──< payments	Un pedido lleva varios pagos intentados…	1:N
+orders ──< order_events	Un pedido tiene muchos eventos (bitácora)	1:N
+
 > Las seis tablas y sus relaciones: `users` → `orders` → `order_items`/`payments`/
 > `order_events`, con `order_items` también apuntando a `products` para el snapshot.
 

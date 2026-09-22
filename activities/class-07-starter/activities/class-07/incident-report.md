@@ -6,6 +6,8 @@ interpretaciones: un "creo que" pertenece a Hypotheses, no a Evidence.
 ## Baseline
 
 Which command confirmed the starting state?
+npm run class-07:doctor  # 7/7 PASS
+npm test                 # 20 pass, 17 todo
 
 ## Incident 701
 

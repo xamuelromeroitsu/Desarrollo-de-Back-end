@@ -35,7 +35,17 @@ npm test                 # 20 pass, 17 todo
 never paste a connection string or a token here)
 
 ### Confirmed cause
+En Bruno, creá el request así:
 
+Method: GET
+URL: http://localhost:3000/requests/not-a-number
+Andá a la pestaña Headers
+En Key escribí exactamente: Authorization
+En Value pegá esto exactamente (sin comillas al inicio ni final):
+
+## Evidencia manual
+
+![confirmando el error manualmente con bruno](701-error-request-not-a-number.png)
 ### Correction
 
 (the minimal change: file and what it does — not the whole diff)

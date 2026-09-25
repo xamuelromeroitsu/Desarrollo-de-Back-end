@@ -91,17 +91,50 @@ test('an agent can move a request through a valid transition', async () => {
 // A valid filter with zero matches is an EMPTY COLLECTION, not a missing
 // resource. This test pins that decision so it cannot silently regress.
 test('returns an empty array when a valid filter has no matches', async () => {
-  // Prepare: a fresh requester who has created nothing at all.
   const loner = await createUser({ name: 'loner' });
   const token = await loginAs(loner);
 
-  // Act
   const response = await request(app)
     .get('/requests?status=closed')
     .set('Authorization', `Bearer ${token}`);
 
-  // Check: both the status AND the body — 200 with something that is not
-  // an empty array would still be a broken contract.
   assert.equal(response.status, 200);
   assert.deepEqual(response.body, []);
+});
+
+// ── INC-701 regression test ────────────────────────────────────────────
+test('rejects non-numeric request id with 400 INVALID_REQUEST_ID', async () => {
+  const user = await createUser({ name: 'invalidid' });
+  const token = await loginAs(user);
+
+  const response = await request(app)
+    .get('/requests/not-a-number')
+    .set('Authorization', `Bearer ${token}`);
+
+  assert.equal(response.status, 400);
+  assert.equal(response.body.error.code, 'INVALID_REQUEST_ID');
+});
+
+test('rejects zero id with 400 INVALID_REQUEST_ID', async () => {
+  const user = await createUser({ name: 'zeroid' });
+  const token = await loginAs(user);
+
+  const response = await request(app)
+    .get('/requests/0')
+    .set('Authorization', `Bearer ${token}`);
+
+  assert.equal(response.status, 400);
+  assert.equal(response.body.error.code, 'INVALID_REQUEST_ID');
+});
+
+test('returns 404 REQUEST_NOT_FOUND for valid but non-existent id', async () => {
+  const user = await createUser({ name: 'missingid' });
+  const token = await loginAs(user);
+
+  const response = await request(app)
+    .get('/requests/999999999')
+    .set('Authorization', `Bearer ${token}`);
+
+  assert.equal(response.status, 404);
+  assert.equal(response.body.error.code, 'REQUEST_NOT_FOUND');
 });

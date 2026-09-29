@@ -33,6 +33,9 @@ async function buildScenario() {
 
   return { owner, agent, ownerToken, agentToken, created };
 }
+//
+// aqui va la preparacion de la base de datos para los tests, y la limpieza posterior
+//esta fue la parte que se agrego para el test de history, ya que este test requiere que existan eventos en la base de datos para poder ser consultados
 
 test('the history requires authentication', async () => {
   const response = await request(app).get('/requests/1/history');
@@ -41,6 +44,7 @@ test('the history requires authentication', async () => {
 
 test('the owner can read the history, oldest event first', async () => {
   const { ownerToken, created } = await buildScenario();
+// aqui seria la accion de la ruta
 
   const response = await request(app)
     .get(`/requests/${created.id}/history`)
@@ -50,6 +54,7 @@ test('the owner can read the history, oldest event first', async () => {
   assert.equal(Array.isArray(response.body), true);
   assert.equal(response.body.length, 3);
 
+  // estas serian las comprobaciones de los eventos, para verificar que se hayan creado correctamente y que se devuelvan en el orden correcto
   const [birth, transition, priority] = response.body;
   assert.equal(birth.type, 'status_changed');
   assert.equal(birth.fromStatus, null);

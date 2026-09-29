@@ -12,37 +12,75 @@ npm test                 # 20 pass, 17 todo
 ## Incident 701
 
 ### Report
-
-(what support said, in one or two lines)
+Soporte reporta que algunas solicitudes devuelven 500 cuando se consultan con identificadores que no son números.
 
 ### Reproduction
-
-(the exact request: method, path, user/role, body if any)
+- Method: GET
+- Path: /requests/not-a-number
+- User: Ana (requester)
+- Headers: Authorization: Bearer <token válido>
 
 ### Expected result
+400 Bad Request
+```json
+{
+  "error": {
+    "code": "INVALID_REQUEST_ID",
+    "message": "Request id must be a positive integer."
+  }
+}
+```
 
 ### Actual result
-
-(status and body actually received — copy them)
+500 Internal Server Error
+```json
+{
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred."
+  }
+}
+```
 
 ### Hypotheses
+1. **El ID no se valida antes de llegar a SQL** (probable)
+   - Cómo verificar: Buscar en requests.routes.js si hay validación de Number() antes de findById()
 
-(at least two, ordered by probability, each with HOW you would check it)
+2. **PostgreSQL lanza error y no se atrapa como AppError** (posible)
+   - Cómo verificar: Revisar si el error de PostgreSQL viaja sin ser transformado en respuesta HTTP
+
+3. **El middleware de errores no está registrado** (menos probable)
+   - Cómo verificar: Revisar app.js si errorHandler está después de las rutas
 
 ### Evidence
+- En requests.routes.js:30: `Number(req.params.id)` convierte "not-a-number" a NaN
+- En requests.store.js:51: `WHERE id = $1` recibe NaN
+- El error en terminal dice: "invalid input syntax for type integer"
+- No hay validación del ID antes de llegar a SQL
+- La respuesta 500 confirma que el error no es un AppError con categoría "contract"
 
-(what you observed: terminal output, the line where the value travels…
-never paste a connection string or a token here)
+![confirmando el error manualmente con bruno](701-error-request-not-a-number.png)
 
 ### Confirmed cause
+El parámetro `:id` de la URL no se valida antes de pasarse a la base de datos. `Number("not-a-number")` devuelve `NaN`, que se envía a SQL, causando un error de PostgreSQL que no es transformado en AppError, sino que viaja como error genérico 500. La corrección es validar el ID en el router antes de llamar a `findById()`.
 
 ### Correction
-
-(the minimal change: file and what it does — not the whole diff)
+- **Archivo:** `src/modules/requests/requests.routes.js`
+- **Cambio:** Agregar validación del ID antes de llamar a `getRequest()`:
+  ```javascript
+  const id = Number(req.params.id);
+  if (isNaN(id) || id <= 0 || !Number.isInteger(id)) {
+    throw new AppError('contract', 'INVALID_REQUEST_ID', 
+      'Request id must be a positive integer.');
+  }
+  ```
+  Esto convierte un error 500 en un error 400 con código `INVALID_REQUEST_ID` antes de que el ID llegue a PostgreSQL.
 
 ### Regression test
-
-(which test now fails without the fix and passes with it)
+- `GET /requests/not-a-number` → `400 INVALID_REQUEST_ID` ✓
+- `GET /requests/0` → `400 INVALID_REQUEST_ID` ✓
+- `GET /requests/999999999` → `404 REQUEST_NOT_FOUND` ✓
+- `GET /requests/123` (existente) → `200 OK` ✓
 
 ## Incident 702
 

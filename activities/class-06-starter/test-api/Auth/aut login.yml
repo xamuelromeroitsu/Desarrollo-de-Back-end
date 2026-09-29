@@ -1,10 +1,18 @@
 info:
   name: "aut login "
   type: http
+  seq: 1
 
 http:
   method: POST
   url: http://localhost:3000/auth/login
+  body:
+    type: json
+    data: |-
+      {
+        "email": "ana.requester.seed@example.test",
+        "password": "ana clave del taller 06"
+      }
   auth: inherit
 
 settings:

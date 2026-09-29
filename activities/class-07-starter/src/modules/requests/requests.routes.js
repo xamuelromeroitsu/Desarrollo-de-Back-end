@@ -12,6 +12,7 @@ import {
   patchRequest,
   getHistory
 } from './requests.service.js';
+import { AppError } from '../../app-error.js';
 import { respondError } from '../../http/respond-error.js';
 
 const router = express.Router();
@@ -24,15 +25,18 @@ router.get('/', async (req, res) => {
     respondError(res, error);
   }
 });
-
 router.get('/:id', async (req, res) => {
   try {
-    res.status(200).json(await getRequest(req.auth, Number(req.params.id)));
+    const id = Number(req.params.id);
+    if (isNaN(id) || id <= 0 || !Number.isInteger(id)) {
+      throw new AppError('contract', 'INVALID_REQUEST_ID', 
+        'Request id must be a positive integer.');
+    }
+    res.status(200).json(await getRequest(req.auth, id));
   } catch (error) {
     respondError(res, error);
   }
 });
-
 router.get('/:id/history', async (req, res) => {
   try {
     res.status(200).json(await getHistory(req.auth, Number(req.params.id)));

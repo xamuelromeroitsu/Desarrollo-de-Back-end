@@ -295,3 +295,145 @@ flowchart LR
 > - `routes.js` solo conoce HTTP → cambiar status code no toca SQL
 >
 > **Un módulo se entiende cuando puedes leer sus flechas sin encontrar ciclos.**
+
+---
+
+# Guía práctica: Las 3 tarjetas para refactor seguro
+
+> **Sin red no hay refactor — hay apuestas**
+> "La suite verde convierte 'creo que no rompí nada' en 'demuestro que no rompí nada'."
+
+Tu red, hoy: **39 pruebas verdes del baseline** — describen el comportamiento actual, cubren rutas, status, bodies, permisos. Si una se pone roja durante el refactor: cambiaste comportamiento — deshaz el paso.
+
+---
+
+## 🟦 Tarjeta 1: CLASIFICAR — "Pon etiquetas a cada cosa"
+
+> Aquí va un handler. Clasifica cada bloque en:
+> HTTP / aplicación / negocio / persistencia / presentación / observabilidad.
+> **NO propongas refactor todavía: solo el mapa.**
+
+### Aplicación al handler `GET /:id/history` (routes.js L38-97)
+
+| Bloque de código | Etiqueta |
+|------------------|----------|
+| `req.params.id`, `parseIdParam`, `res.status(200).json()` | 🌐 **HTTP** (entrada/salida) |
+| `pool.query SELECT...` | 💾 **Persistencia** (SQL) |
+| `req.auth.role === 'agent'`, `created_by === req.auth.userId` | 🏢 **Negocio** (reglas/permisos) |
+| `.map(row => { id: Number(row.id), fromStatus... })` | 🎨 **Presentación** (JSON público) |
+| `throw new AppError(...)` | 🌐 **HTTP** (respuesta error) |
+| *(no hay logs/métricas)* | 📊 **Observabilidad** — *ausente* |
+
+**Regla de oro:** *Solo miras y pones etiquetas. NO mueves nada.*
+
+---
+
+## 🟨 Tarjeta 2: DETECTAR ACOPLAMIENTO — "¿Qué sabe este archivo que NO debería saber?"
+
+> ¿Qué sabe este archivo que no le corresponde?
+> Lista cada detalle ajeno (columnas, status, req/res) y di a qué capa pertenece.
+> **No reescribas nada.**
+
+### En `routes.js` (handler history)
+
+| Detalle ajeno que sabe `routes.js` | Capa a la que pertenece | Por qué es problema |
+|-----------------------------------|------------------------|---------------------|
+| `pool` (conexión BD) | Persistencia | HTTP no debe conocer BD |
+| Nombres de tablas: `requests`, `request_history` | Persistencia | Cambio de esquema rompe HTTP |
+| Columnas: `created_by`, `from_status`, `to_priority` | Persistencia | Detalle de implementación |
+| Lógica `isAgent \|\| isOwner` | Negocio | Policy duplicada a mano |
+| Mapeo `row.from_priority → fromPriority` | Presentación | Duplicado de `mapper.js` |
+
+**Regla de oro:** *Lista lo ajeno. NO reescribas.*
+
+---
+
+## 🟩 Tarjeta 3: PLANIFICAR PASOS — "Pasitos de bebé, uno a la vez"
+
+> Propón un plan de refactor en pasos PEQUEÑOS y REVERSIBLES.
+> Después de cada paso la suite debe seguir verde.
+> **Prohibido:** cambiar rutas, status, bodies o permisos.
+
+### Plan para `GET /:id/history` (8 pasos, siempre igual)
+
+| Paso | Acción | Archivo | Verificación |
+|------|--------|---------|--------------|
+| 0 | `npm test` → 39 verdes | — | **Si no verde: PARAR** |
+| 1 | Crear `getHistory(actor, id)` en service | `service.js` | Usa SOLO funciones existentes |
+| 2 | `npm test` → 39 verdes | — | Si roja: `git checkout service.js` |
+| 3 | Cambiar handler en routes a 3 líneas | `routes.js` | Llama a `service.getHistory` |
+| 4 | Borrar `import { pool }` y `AppError` | `routes.js` | Ya no se usan |
+| 5 | `npm test` → 39 verdes | — | Si roja: deshacer paso 3-4 |
+| 6 | Commit + anotar en `refactor-log.md` | — | Histórico |
+
+**Regla de oro:** *Un paso = un archivo tocado = tests verdes. Si tests rojos → deshaces ESE paso.*
+
+---
+
+## La ruta (mapa) para llegar al refactor limpio
+
+```
+INICIO
+  │
+  ▼
+┌─────────────────────────────────────┐
+│ 0. VERDE ANTES (npm test = 39 pass) │  ← Puerta de entrada
+└─────────────────────────────────────┘
+  │
+  ▼
+┌─────────────────────────────────────┐
+│ 1. CLASIFICAR handler history       │  ← Gafas azules
+│    (HTTP / Negocio / BD / JSON)     │
+└─────────────────────────────────────┘
+  │
+  ▼
+┌─────────────────────────────────────┐
+│ 2. DETECTAR acoplamiento en routes  │  ← Gafas amarillas
+│    (pool, columnas, policy, mapper) │
+└─────────────────────────────────────┘
+  │
+  ▼
+┌─────────────────────────────────────┐
+│ 3. PLANIFICAR 6 pasos pequeños      │  ← Gafas verdes
+│    (service → route → limpiar)      │
+└─────────────────────────────────────┘
+  │
+  ▼
+┌─────────────────────────────────────┐
+│ 4. EJECUTAR paso a paso             │  ← Camina
+│    test → verde → siguiente         │
+└─────────────────────────────────────┘
+  │
+  ▼
+FIN: routes delgado, service orquesta, tests verdes
+```
+
+---
+
+## Checklist mental diario
+
+**Antes de escribir CUALQUIER código:**
+- [ ] ¿Ya pasé tarjeta 1 (Clasificar)?
+- [ ] ¿Ya pasé tarjeta 2 (Detectar acoplamiento)?
+- [ ] ¿Tengo plan por escrito de tarjeta 3 (pasos pequeños)?
+
+**Mientras escribo:**
+- [ ] ¿La IA me dio código sin que pidiera? → **VUELVE A TARJETA**
+- [ ] ¿Tests se pusieron rojos? → **DESHACE ÚLTIMO PASO**
+
+**Al terminar:**
+- [ ] ¿Routes delgado? (solo HTTP)
+- [ ] ¿Service orquesta sin conocer req/res?
+- [ ] ¿Policy/store/mapper intactos?
+- [ ] ¿39 tests verdes?
+
+---
+
+## Próxima acción concreta (para hoy)
+
+1. **Paso 0**: `npm test` → confirma 39 verdes
+2. **Paso 1**: Añade `getHistory(actor, id)` a `service.js` (solo conecta lo que ya existe: `findById`, `canViewHistory`, `findHistory`, `mapRequestRow`, `mapHistoryEventRow`)
+3. **Paso 2**: `npm test` → verde
+4. **Paso 3-4**: Adelgaza `routes.js` (handler 3 líneas, borra imports `pool` y `AppError`)
+5. **Paso 5**: `npm test` → verde
+6. **Paso 6**: Commit + `refactor-log.md`

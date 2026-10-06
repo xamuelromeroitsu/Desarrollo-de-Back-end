@@ -1,0 +1,26 @@
+{
+    "sqltools.connections": [
+        {
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "class-06",
+            "database": "6543",
+            "username": "postgres.haaffjilirwjjboiwyrb",
+            "group": "DATABASE_URL=postgresql://postgres:tu_contraseña@localhost:5432/tu_base_datos"
+        },
+        {
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "aws-0-us-east-2.pooler.supabase.com",
+            "port": 6543,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "name": "class-6",
+            "database": "postgres",
+            "username": "postgres.haaffjilirwjjboiwyrb"
+        }
+    ]
+}

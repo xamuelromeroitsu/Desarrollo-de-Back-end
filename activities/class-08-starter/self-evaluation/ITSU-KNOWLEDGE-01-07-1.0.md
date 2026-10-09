@@ -147,3 +147,61 @@ Prioridades transversales, señales registradas (si las hay), hasta DOS pregunta
 ---
 
 El examen comienza cuando el estudiante escriba COMENZAR.
+
+
+{
+  "resultCode": "ITSU-KNOWLEDGE|V=1.0|R=BACKEND-01-07-K1|C01=1|C02=2|C03=1|C04=2|C05=2|C06=1|C07=1|ACTION=SUPPORT",
+  "studentId": "xamuelromero.itsu@gmail.com",
+  "action": "SUPPORT",
+  "signals": ["NONE"],
+  "classes": [
+    {
+      "classId": "01",
+      "level": 1,
+      "question": "¿Qué observa exactamente el usuario si el servidor está apagado y por qué?",
+      "evidence": "Respondió que el cliente responde con un 500 diciendo que el servidor no está conectado."
+    },
+    {
+      "classId": "02",
+      "level": 2,
+      "question": "¿Qué método HTTP se usa para registrar una nueva entidad y dónde viajan los datos?",
+      "evidence": "Identificó el uso del método POST y el body para la información, aunque confundió el rol de los headers."
+    },
+    {
+      "classId": "03",
+      "level": 1,
+      "question": "¿Qué código de estado HTTP se devuelve al violar reglas de estado y por qué?",
+      "evidence": "Mencionó el código 404 en lugar de 409 y justificó de forma imprecisa sobre los errores."
+    },
+    {
+      "classId": "04",
+      "level": 2,
+      "question": "¿Por qué nunca se debe interpolar texto en SQL y qué riesgo se previene?",
+      "evidence": "Comprendió el riesgo de inyección de parámetros maliciosos, aunque confundió conceptualmente la interpolación con inserciones."
+    },
+    {
+      "classId": "05",
+      "level": 2,
+      "question": "¿Por qué la identidad se deriva del token verificado y no del body?",
+      "evidence": "Mencionó la prevención de suplantación de identidad con tokens Bearer, aunque no detalló la verificación de la firma criptográfica."
+    },
+    {
+      "classId": "06",
+      "level": 1,
+      "question": "¿Cuáles son las fases de una prueba y por qué debe fallar antes?",
+      "evidence": "Mencionó de forma muy fragmentada la planificación e inserción sin explicar el ciclo rojo-verde de TDD."
+    },
+    {
+      "classId": "07",
+      "level": 1,
+      "question": "¿Qué rol cumple el error middleware y qué es el Request ID?",
+      "evidence": "Indicó de forma vaga que el middleware verifica/protege y que el Request ID es para obtener una clave."
+    }
+  ],
+  "reviewTopics": [
+    "Códigos de estado HTTP y diferenciación entre 400, 404 y 409",
+    "Pruebas unitarias, estructura AAA y TDD (ciclo de prueba fallida)",
+    "Manejo de errores globales y trazabilidad con Request IDs en logs"
+  ],
+  "teacherDigest": "Estudiante con nociones básicas de verbos HTTP, seguridad por tokens y prevención de inyecciones SQL, pero con huecos significativos en códigos de estado específicos, TDD y arquitectura de errores/logs."
+}

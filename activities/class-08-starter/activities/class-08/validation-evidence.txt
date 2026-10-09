@@ -5,6 +5,17 @@ Pega aquí la salida REAL y COMPLETA de:
 Debe incluir las 12 verificaciones con sus secciones (Baseline, Claim
 request, Boundaries), la línea de Cleanup y el FINAL RESULT.
 
+
+✔ the Authorization header and the token never reach the log (615.665335ms)
+ℹ tests 52
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 13
+ℹ duration_ms 35670.213121
+
 Antes de guardar, revisa que no haya ninguna credencial pegada por error:
 ni DATABASE_URL, ni JWT_SECRET, ni tokens. Si aparece algo así,
 reemplázalo por [REDACTED].

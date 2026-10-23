@@ -30,7 +30,8 @@ Nota: `npm run dev` ya estaba corriendo en otra terminal; no lo inicié de nuevo
 - Completé §1–§9 de `system-dossier.md`: inventario, recorrido de
   `GET /requests/:id`, auditoría de 15 áreas, impacto y dudas.
 - Reproduje BUG-901 con un script temporal (ya eliminado) usando
-  `supertest`, usuarios sintéticos y el helper de cleanup:
+  `supertest`, dos cuentas reales creadas contra la base vía
+  `/auth/register` (no mocks) y el helper de cleanup:
   - requester ajeno → `200` con el id 169;
   - requester ajeno + `?userId=<owner>` → `200`;
   - owner → `200`; agent → `200`;
@@ -58,6 +59,18 @@ Nota: `npm run dev` ya estaba corriendo en otra terminal; no lo inicié de nuevo
 - `npm run validate:class-09` → 14/14 PASS,
   `FINAL RESULT: PASSED`.
 - Salida guardada en `activities/class-09/validation-evidence.txt`.
+
+## Fase 5 — Cierre del ticket BUG-901 (2026-10-23 11:04 -04)
+
+- Marqué los 7 criterios de Done en `tickets/BUG-901.md` y dejé el estado
+  actual como resuelto y verificado.
+- Dejé explícito que la reproducción usó dos cuentas reales creadas contra
+  la base vía `/auth/register`, no mocks.
+- Amplié la regresión de identidad para cubrir `userId`/`createdBy` tanto en
+  query como en body.
+- `npm run test:detail` → 6/6 PASS.
+- `npm test` → 64/64 PASS, 0 fail, 0 todo.
+- `npm run validate:class-09` → 14/14 PASS, `FINAL RESULT: PASSED`.
 
 ## Commits
 

@@ -280,7 +280,8 @@ inexistente (`404`) para no confirmar su existencia.
 ### Tests to add or change
 
 - Convertir `test/request-detail.test.js:69` (requester ajeno → 404, mismo
-  código que inexistente) y `:77` (`?userId=<owner>` no concede acceso).
+  código que inexistente) y el caso de `userId`/`createdBy` en query o body
+  (no conceden acceso).
 - Convertir `test/request-access-policy.test.js:19,24,29` (agent true,
   owner true, stranger false).
 - Mantener el test de schema (`request-detail.test.js:47-50`) y la suite de

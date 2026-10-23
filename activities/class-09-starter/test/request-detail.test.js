@@ -88,17 +88,23 @@ test('a different requester receives the same 404 as a missing request', async (
 });
 
 // BUG-901 regression: identity comes only from the verified token.
-test('a userId in the query string does not grant access', async () => {
+test('a userId in the query string or body does not grant access', async () => {
   const owner = await createUser({ name: 'detail-owner-4' });
   const stranger = await createUser({ name: 'detail-stranger-2' });
   const ownerToken = await loginAs(owner);
   const strangerToken = await loginAs(stranger);
   const created = await createRequestAs(ownerToken);
 
-  const response = await request(app)
+  const byQuery = await request(app)
     .get(`/requests/${created.id}?userId=${owner.id}`)
     .set('Authorization', `Bearer ${strangerToken}`);
+  const byBody = await request(app)
+    .get(`/requests/${created.id}`)
+    .set('Authorization', `Bearer ${strangerToken}`)
+    .send({ userId: owner.id, createdBy: owner.id });
 
-  assert.equal(response.status, 404);
-  assert.equal(response.body.error.code, 'REQUEST_NOT_FOUND');
+  assert.equal(byQuery.status, 404);
+  assert.equal(byQuery.body.error.code, 'REQUEST_NOT_FOUND');
+  assert.equal(byBody.status, 404);
+  assert.equal(byBody.body.error.code, 'REQUEST_NOT_FOUND');
 });

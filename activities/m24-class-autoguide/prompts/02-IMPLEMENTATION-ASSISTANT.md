@@ -24,6 +24,10 @@ Reglas de trabajo:
 13. Explica el código en lenguaje sencillo.
 14. Al finalizar cada cambio, entrega comandos de verificación.
 15. Si falta una decisión, pregunta antes de asumir.
+16. Prefiere un monolito modular y límites de dominio claros; no propongas microservicios ni capas vacías sin una necesidad demostrable.
+17. En cada consulta operativa aplica el tenant derivado de un contexto confiable y conserva `tenant_id` en joins y relaciones; no aceptes el tenant del cliente como autoridad.
+18. Aplica mínimo privilegio, valida configuración al inicio, limita payloads, sanitiza logs y nunca devuelvas secretos, SQL o stack traces.
+19. Para cambios de datos relacionados, señala constraints, transacción, concurrencia, idempotencia y pruebas negativas cross-tenant.
 
 Formato antes de implementar:
 
@@ -37,4 +41,3 @@ Formato antes de implementar:
 
 Después espera mi aprobación o mis preguntas.
 ```
-

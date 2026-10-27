@@ -1,0 +1,25 @@
+{
+  "name": "m24-vending-platform",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node apps/api/src/server.js",
+    "dev": "node --watch apps/api/src/server.js",
+    "test": "node --import dotenv/config --test",
+    "test:integration": "node --import dotenv/config --test test/public-catalog.integration.test.js",
+    "db:migrate": "node scripts/migrate.js",
+    "db:seed": "node scripts/seed.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^5.2.1",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0"
+  }
+}

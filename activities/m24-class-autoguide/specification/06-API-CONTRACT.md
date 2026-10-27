@@ -150,6 +150,37 @@ POST /public/orders/:publicToken/payments/simulate
 POST /public/orders/:publicToken/cancel
 ```
 
+Catálogo `GET /public/machines/:publicCode/catalog` devuelve solamente una
+máquina activa y los slots con producto activo y unidades disponibles. La
+respuesta no incluye tenant interno ni datos de dispositivo:
+
+```json
+{
+  "data": {
+    "machine": { "publicCode": "public-random-code", "name": "Lobby" },
+    "items": [
+      {
+        "slotId": "uuid",
+        "position": "A1",
+        "availableQuantity": 4,
+        "priceMinor": 150,
+        "product": {
+          "id": "uuid",
+          "sku": "WATER-500",
+          "name": "Water",
+          "description": null,
+          "currency": "USD"
+        }
+      }
+    ]
+  }
+}
+```
+
+El tenant se deriva en el servidor desde `publicCode`; la petición no acepta
+`tenantId` como criterio de autorización. Código inválido: `400`; máquina
+inexistente, inactiva o invisible: `404` para no revelar su estado.
+
 Crear orden:
 
 ```json
@@ -213,4 +244,3 @@ GET /ready
 - `429` límite;
 - `500` inesperado;
 - `503` dependencia no disponible/readiness.
-

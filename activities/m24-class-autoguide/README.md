@@ -27,6 +27,12 @@ Hoy debes:
 6. ejecutar la primera vertical funcional;
 7. dejar un plan verificable para completar el sistema durante la semana.
 
+La ruta práctica recomendada para iniciar el MVP está en
+[`MVP-IMPLEMENTATION-ROUTE.md`](./MVP-IMPLEMENTATION-ROUTE.md). El proyecto
+ejecutable del curso puede vivir separado del material en
+`projects/m24-vending-platform/`; confirma la ruta con tu equipo antes de
+crear una alternativa.
+
 ## Antes de comenzar
 
 Necesitas:
@@ -76,11 +82,11 @@ Tiempo disponible en clase: 100 minutos.
 1. Lee `specification/01-PRODUCT-SCOPE.md`.
 2. Revisa arquitectura, datos, permisos, estados y API.
 3. Completa `templates/implementation-plan.md`.
-4. Crea el repositorio.
-5. Configura los cuatro componentes.
-6. Conecta Supabase.
-7. Crea las primeras migraciones.
-8. Implementa el primer flujo vertical.
+4. Confirma la carpeta del proyecto y crea una API ejecutable.
+5. Configura la conexión PostgreSQL/Supabase y migraciones.
+6. Implementa y prueba primero el catálogo público por `publicCode`.
+7. Continúa la vertical con orden, reserva, pago simulado y despacho.
+8. Añade las interfaces según el flujo backend ya comprobado.
 9. Registra decisiones y uso de IA.
 10. Realiza el checkpoint final de clase.
 
@@ -88,7 +94,8 @@ Después de la clase sigue `specification/13-WEEKLY-ROADMAP.md`. Para preparar l
 
 ## Primera vertical recomendada
 
-Antes de salir del aula intenta completar:
+Completa por etapas; no es necesario construir las cuatro aplicaciones completas
+antes de verificar la ruta inicial:
 
 ```text
 Tenant de ejemplo
@@ -100,7 +107,26 @@ Tenant de ejemplo
 → catálogo público de la máquina
 ```
 
-Si avanzas más, continúa con creación de orden y reserva de inventario.
+La primera API expone `GET /api/v1/public/machines/:publicCode/catalog`. Deriva
+el tenant desde la máquina encontrada y no acepta un tenant indicado por el
+cliente. Si ya puedes probar esa ruta con datos de dos tenants, continúa con
+creación de orden y reserva atómica de inventario.
+
+## Decisión de arquitectura para empezar
+
+Utiliza un **monolito modular** con límites claros en vez de microservicios:
+las aplicaciones web consumen la API; solo el backend accede a PostgreSQL.
+Dentro de cada módulo, las rutas manejan HTTP, los servicios coordinan casos de
+uso, las policies expresan reglas puras y los stores ejecutan SQL parametrizado.
+Cada tabla operativa conserva `tenant_id`, y las relaciones compuestas impiden
+asociar por error entidades de tenants distintos.
+
+Separa responsabilidades sin crear archivos o capas vacías. La primera
+vertical necesita health/readiness, catálogo y persistencia; autenticación
+administrativa, RBAC, compras y despacho se incorporan cuando el flujo los
+requiera. Revisa [`specification/02-SYSTEM-ARCHITECTURE.md`](./specification/02-SYSTEM-ARCHITECTURE.md)
+y [`specification/10-NON-FUNCTIONAL-REQUIREMENTS.md`](./specification/10-NON-FUNCTIONAL-REQUIREMENTS.md)
+para los límites y controles de seguridad.
 
 ## Estructura recomendada del repositorio
 
@@ -215,4 +241,3 @@ Sí se espera que puedas navegar tu sistema, explicar sus reglas, encontrar evid
 - `specification/`: alcance, arquitectura, datos, reglas, API, calidad y ruta semanal;
 - `templates/`: archivos que debes completar como evidencia;
 - `validator/`: comprobador común y sus instrucciones.
-
